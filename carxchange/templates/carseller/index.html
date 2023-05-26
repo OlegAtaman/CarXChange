@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block 'nav' %}
+            <li class="logoflex"><a href="#"><img class='logo' src="{% static 'images/logo.png' %}"></a></li>
+            <li><a class='topmenu' href="cars.html">Автомобілі</a></li>
+            <li><a class='topmenu' href="sellers.html">Продавці</a></li>
+            <li class="user_link"><a style='line-height: 0px;' class="topmenu" href="my_profile.html"><img id="dark" style="display: none;" class='user_img' src="{% static 'images/user_dark.png' %}"><img id='light' class='user_img' src="{% static 'images/user.png' %}"></a></li>
+{% endblock %}
+{% block 'content' %}
+    <div class="background">
+    <div class="infoblock"><h1>Що таке Car-X-change?</h1>
+        <p>
+            Наш сайт - платформа для вільного, доступного і швидкого продажу автотранспорту.
+            Ми надаємо інструменти для створення та пошуку оголошень на будь-який смак.
+            Почніть користуватися сайтом сьогодні, і можливо вже завтра ви будете їздити на новому коні.
+        </p>
+    </div>
+    <div class="imgwrapper"><div class="imginfoblock">
+        <h1>Як користуватися сайтом?</h1>
+        <ul>
+            <li><h2>1.Реєстрація</h2><p>Реєстрація обов’язкова, адже ми намагаємося зменшити кількість спаму (як оголошень, так і дзвінків продавцям)</p></li>
+            <li><h2>2.Профіль</h2><p>Якщо ви продаєте авто, вам доведеться оформити профіль. Там ви вкажете контакти, та за бажанням зміните свій аватар</p></li>
+            <li><h2>3.Пошук</h2><p>Ви можете шукати оголошення та продавців за допомогою багатьох вільтрів та пошукової строки</p></li>
+        </ul>
+    </div></div>
+    <div class="map">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d898.2238327004857!2d30.465031082335738!3d50.44928369591148!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40d4ce8314fdfde3%3A0xd09dbe758a8cc765!2z0JrQn9CGINCa0L7RgNC_0YPRgSA1INCi0JXQpCBp0LwuINCd0LUg0JDQvdGC0L7QvdCwINCc0L7QvdC60L7QstCw!5e0!3m2!1suk!2sua!4v1683472133812!5m2!1suk!2sua" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+    <div class="infoblock addpadding">
+        <p>Для вирішення будь-яких питань пишіть нам на пошту чи телеграм. Також ви можете подзвонити напряму у наш кол-центр, чи прийти у офіс для очної консультації. Гаряча лінія працює 24/7, а офіс з понеділка по п'ятницю з 9:00 до 16:00.</p>
+    </div></div>
+{% endblock %}
