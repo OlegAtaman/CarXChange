@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block 'content' %}
+<div class="bgcont">    
+    <div style="text-align: center;" class="marginforffh finalformholder"><form action="{% url 'login' %}" method="post" name="login">
+        {% csrf_token %}
+        <h2>Увійти до акаунту</h2>
+        <p>Логін: {{ form.username }}</p>
+        <p>Пароль: {{ form.password }}</p>
+        {{ form.errors }}
+        <button type="submit">Зареєструватися</button>
+    </form></div>
+</div>
+{% endblock %}

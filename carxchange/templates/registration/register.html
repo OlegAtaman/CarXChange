@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block 'content' %}
+    <div class="bgcont">
+        <div style="margin: 8% auto;" class="finalformholder"><form method="post" enctype="multipart/form-data" action="{% url 'registration' %}" name="registration">
+            {% csrf_token %}
+            <h2>Реєстрація</h2>
+            <p>Логін: {{ form.username }}</p>
+            <p>Пароль: {{ form.password1 }}</p>
+            <p>Підтвердження паролю: {{ form.password2 }}</p>
+            <p>Ім'я: {{ form.full_name }}</p>
+            <p>Контакти: {{ form.contacts }}</p>
+            <p>Регіон: {{ form.region }}
+            <!-- <select class='region' name="region" autocomplete="country">
+
+                <option value="value1" selected>-інший-</option>
+                <option value="value2">м.Київ</option>
+                <option value="value3">Київська область</option>
+                <option value="value4">Харківська облась</option>
+                <option value="value5">Дніпропетровська область</option>
+                <option value="value6">Львівська область</option>
+                <option value="value7">Одеська область</option>
+                <option value="value8">Вінницька область</option>
+                <option value="value9">Житомирська область</option>
+            </select> -->
+            </p>
+            <p>Фото профілю: {{ form.picture }}
+            <label class="profilephotolabel" for="id_picture">-Завантажити-</label></p>
+            {{ form.errors }}
+            <button type="submit">Зареєструватися</button>
+        </form></div>
+    </div>
+{% endblock %}
