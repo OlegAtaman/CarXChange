@@ -1,3 +1,11 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+from .models import CarUser
 
-# Register your models here.
+class CustomUserAdmin(UserAdmin):
+    fieldsets = UserAdmin.fieldsets + (
+        ('Additional Info', {'fields': ('picture',)}),
+    )
+
+
+admin.site.register(CarUser, CustomUserAdmin)
