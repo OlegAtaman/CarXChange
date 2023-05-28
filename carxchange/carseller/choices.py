@@ -15,7 +15,7 @@ ACCIDENTS_CHOICES = [
     ("NEG", "Не був у ДТП")
 ]
 BRAND_CHOICES = [
-    ("OTH", "Бензин"),
+    ("OTH", "Інша"),
     ("BMW", "BMW"),
     ("VOL", "VolksWagen"),
     ("TOY", "Toyota"),

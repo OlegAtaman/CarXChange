@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block 'content' %}
+<div class="bgcont">
+    <div class="finalformholder"><form method="post"  enctype="multipart/form-data" name="newadd">
+        {% csrf_token %}
+        <h2>Нове оголошення</h2>
+        <p>Назва: {{ form.title }}</p>
+        <p>Ціна: {{ form.price }} грн</p>
+        <p>Пробіг: {{ form.runtime }} км</p>
+        <p>Колір: {{ form.color }}</p>
+        <p>Привід: {{ form.wheel }}
+            <!-- <select name="wheel">
+            <option value="value1">Задній</option>
+            <option value="value2">Передній</option>
+            <option value="value3">Повний</option>
+            </select> -->
+        </p>
+        <p>Паливо: {{ form.fuel }}
+            <!-- <select name="fuel">
+            <option value="value1">Бензин</option>
+            <option value="value2">Дизель</option>
+            <option value="value3">Електрика</option>
+            <option value="value3">Гібрид</option>
+            <option value="value3">Газ</option>
+            </select> -->
+        </p>
+        <p>Участь у ДТП: {{ form.accidents }}
+            <!-- <select name="accidents">
+            <option value="value1">Не був</option>
+            <option value="value2">Був</option>
+            </select> -->
+        </p>
+        <p>Марка: {{ form.brand }}
+            <!-- <select name="brand">
+            <option value="value3">-інша-</option>
+            <option value="value1">BMW</option>
+            <option value="value2">Audi</option>
+            <option value="value3">Volkswagen</option>
+            <option value="value3">ЗАЗ</option>
+            <option value="value3">Opel</option>
+            <option value="value3">Toyota</option>
+            <option value="value3">Mitsubishi</option>
+            <option value="value3">Cirtoen</option>
+            </select> -->
+        </p>
+        <p>Коробка передач: {{ form.transmisson }}
+            <!-- <select name="transmission">
+            <option value="value1">Механічна</option>
+            <option value="value2">Автоматична</option>
+            </select> -->
+        </p>
+        <p>Опис:<br>{{ form.description }}</p>
+        <p>Фото машини: {{ form.picture }}
+        <label class="profilephotolabel" for="id_picture">-Завантажити-</label></p>
+        {{ form.errors }}
+        <button type="submit">Створити</button>
+    </form></div>
+</div>
+{% endblock %}

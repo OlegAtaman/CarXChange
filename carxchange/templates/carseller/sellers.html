@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block 'content' %}
+<div class="main">
+    <script>
+        $(document).ready(function(){
+            var left_obj = $('.rec_or_saved_l');
+            var right_obj = $($('.rec_or_saved_r'));
+            $('.rec_or_saved_r').on( "click", function() {
+                console.log('clicked! r');
+                if ($(this).hasClass('rec_or_saved_selected')) {
+                    console.log('r yep');
+                } else {
+                    console.log('r nope');
+                    right_obj.addClass('rec_or_saved_selected');
+                    left_obj.removeClass('rec_or_saved_selected');
+                }
+            });
+            $('.rec_or_saved_l').on( "click", function() {
+                console.log('clicked! l');
+                if ($(this).hasClass('rec_or_saved_selected')) {
+                    console.log('l yep');
+                } else {
+                    console.log('l nope');
+                    left_obj.addClass('rec_or_saved_selected');
+                    right_obj.removeClass('rec_or_saved_selected');
+                }
+            });
+
+        });
+    </script>
+    <script>
+        $(document).ready(function(){
+            $('#ghost, .filterholder').hover(function(){
+                $('.filterholder').toggleClass('filterholder-view')
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $("#ghost").css("height", $(".filterholder").height());
+        });
+    </script>
+    <script>
+        $(document).ready(function(){
+            $('#ghost2, .helpholder').hover(function(){
+                $('.helpholder').toggleClass('helpholder-view')
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $("#ghost2").css("height", $(".helpholder").height());
+        });
+    </script>
+    <script>
+        $(document).ready(function(){
+            $(".carad").each(function(){
+                var width = $(this)[0].scrollWidth;
+                if (width > 1050) { 
+                    $(this).css("height", 830);
+                } else if (width > 500) {
+                    $(this).css("height", 500);
+                }
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function(){
+            var num = $(".catholder").children().length;
+            if (num == 0) {
+                $(".catholder").append('<p style="text-align:center">Поки у нас немає доступних моделей.</p>')
+                $(".filterholder").hide();
+                $("#ghost").hide();
+                $(document).ready(function() {
+                    $("footer").css("position", 'fixed');
+                    $("footer").css("bottom", 0);
+                });
+            } else if ((num > 1) && (num < 5)) {
+                console.log('yay');
+                $("footer").css("position", 'absolute');
+                $("footer").css("top", 350 + $(".filterholder").height());
+                console.log('yay');
+            }
+        });
+    </script>
+
+    
+    <div class="searchbox">
+        <form class="formbox" method="GET">
+            <img src="{% static 'images/search.png' %}">
+            <input class="searchfield" placeholder="Пошук" type="textfield" name="search">
+            <input class="subbutton" type="submit" value="">
+        </form>
+        <div class="switcher">
+            <button class="rec_or_saved_selected rec_or_saved_l">Рекомендації</button>
+            <button class="rec_or_saved_r">Збережене</button>
+        </div>
+    </div>
+    <!-- <h1 style="padding: 3% 20% 0% 20%; text-align: center;">Наш доступний авторяд:</h1> -->
+    <div class="sellerholder">
+        {% for seller in sellers %}
+        <div class="selleradd carad">
+            <img class="sellpreview" src="{{ seller.picture.url }}">
+            <h3>{{ seller.full_name }}</h3>
+            <span>
+                <p>{{ seller.get_region_display }}</p>
+                <p>Оголошень створено: #NONE#</p>
+            <div class="carad_buttons">
+            <a style='background-color: #FFCA11;' class="detailseller" href="{% url 'seller' seller.id %}">Переглянути</a>
+            </div>
+            </span>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="pages">
+        <a href="#">Назад</a>
+        <a href="#">Вперед</a>
+        <form>
+            Перейти до
+            <select name="page">
+                <option value=1>1</option>
+                <option value=2>2</option>
+                <option value=3>3</option>
+            </select>
+            з 23
+        <input type="submit" value="Перейти"></form>
+    </div>
+</div>
+{% endblock %}
