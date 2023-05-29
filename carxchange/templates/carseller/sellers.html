@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load filters %}
+{% block 'nav' %}
+            <li class="logoflex"><a href="{% url 'main' %}"><img class='logo' src="{% static 'images/logo.png' %}"></a></li>
+            <li><a class='topmenu' href="{% url 'cars' %}">Автомобілі</a></li>
+            <li><a class='topmenu selectedpage' href="{% url 'sellers' %}">Продавці</a></li>
+            <li class="user_link"><a style='line-height: 0px;' class="topmenu" href="{% url 'profile' %}"><img id="dark" style="display: none;" class='user_img' src="{% static 'images/user_dark.png' %}"><img id='light' class='user_img' src="{% static 'images/user.png' %}"></a></li>
+{% endblock %}
 {% block 'content' %}
 <div class="main">
     <script>
@@ -102,10 +109,14 @@
         {% for seller in sellers %}
         <div class="selleradd carad">
             <img class="sellpreview" src="{{ seller.picture.url }}">
-            <h3>{{ seller.full_name }}</h3>
+            {% if seller.full_name|length > 16 %}
+                <h3>{{ seller.full_name|slice:":16" }}...</h3>
+            {% else %}
+                <h3>{{ seller.full_name }}</h3>
+            {% endif %}
             <span>
                 <p>{{ seller.get_region_display }}</p>
-                <p>Оголошень створено: #NONE#</p>
+                <p>Оголошень створено: 0</p>
             <div class="carad_buttons">
             <a style='background-color: #FFCA11;' class="detailseller" href="{% url 'seller' seller.id %}">Переглянути</a>
             </div>
@@ -114,16 +125,20 @@
         {% endfor %}
     </div>
     <div class="pages">
-        <a href="#">Назад</a>
-        <a href="#">Вперед</a>
+        {% if page > 1 %}
+            <a href="{% url 'sellers' %}?{{ request.GET|removetag:'page' }}&page={{ prev }}">Назад</a>
+        {% endif %}
+        {% if page != pages %}
+            <a href="{% url 'sellers' %}?{{ request.GET|removetag:'page' }}&page={{ next }}">Вперед</a>
+        {% endif %}
         <form>
             Перейти до
             <select name="page">
-                <option value=1>1</option>
-                <option value=2>2</option>
-                <option value=3>3</option>
+                {% for i in pages|trange %}
+                    <option value={{forloop.counter}}>{{forloop.counter}}</option>
+                {% endfor %}
             </select>
-            з 23
+            з {{ pages }}
         <input type="submit" value="Перейти"></form>
     </div>
 </div>

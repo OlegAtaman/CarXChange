@@ -10,5 +10,6 @@ urlpatterns = [
     path('seller/<int:pk>', views.sellerview, name='seller'),
     path('car/<int:pk>', views.carview, name="car"),
     path('cars', views.carlist, name='cars'),
-    path('sellers', views.sellerlist, name='sellers')
+    path('sellers', views.sellerlist, name='sellers'),
+    path('filldb', views.fill_db_view)
 ]

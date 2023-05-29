@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load filters %}
+{% block 'nav' %}
+            <li class="logoflex"><a href="{% url 'main' %}"><img class='logo' src="{% static 'images/logo.png' %}"></a></li>
+            <li><a class='topmenu selectedpage' href="{% url 'cars' %}">Автомобілі</a></li>
+            <li><a class='topmenu' href="{% url 'sellers' %}">Продавці</a></li>
+            <li class="user_link"><a style='line-height: 0px;' class="topmenu" href="{% url 'profile' %}"><img id="dark" style="display: none;" class='user_img' src="{% static 'images/user_dark.png' %}"><img id='light' class='user_img' src="{% static 'images/user.png' %}"></a></li>
+{% endblock %}
 {% block 'content' %}
 <div class="main">
     <script>
@@ -169,16 +176,20 @@
         {% endfor %}
     </div>
     <div class="pages">
-        <a href="#">Назад</a>
-        <a href="#">Вперед</a>
+        {% if page > 1 %}
+            <a href="{% url 'cars' %}?{{ request.GET|removetag:'page' }}&page={{ prev }}">Назад</a>
+        {% endif %}
+        {% if page != pages %}
+        <a href="{% url 'cars' %}?{{ request.GET|removetag:'page' }}&page={{ next }}">Вперед</a>
+        {% endif %}
         <form>
             Перейти до
             <select name="page">
-                <option value=1>1</option>
-                <option value=2>2</option>
-                <option value=3>3</option>
+                {% for i in pages|trange %}
+                    <option value={{forloop.counter}}>{{forloop.counter}}</option>
+                {% endfor %}
             </select>
-            з 23
+            з {{ pages }}
         <input type="submit" value="Перейти"></form>
     </div>
 </div>
