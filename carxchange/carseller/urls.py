@@ -11,5 +11,9 @@ urlpatterns = [
     path('car/<int:pk>', views.carview, name="car"),
     path('cars', views.carlist, name='cars'),
     path('sellers', views.sellerlist, name='sellers'),
-    path('filldb', views.fill_db_view)
+    path('deletecar/<int:pk>', views.deletecar, name='delete'),
+    path('toggle_favorite', views.toggle_favorite, name='toggle_favorite'),
+    path('toggle_favorite_sellers', views.toggle_favorite_sellers, name='toggle_favorite_sellers'),
+    path('filldb', views.fill_db_view),
+    path('fixnum', views.fixnum)
 ]

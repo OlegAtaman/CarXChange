@@ -26,7 +26,11 @@
             <li class="logoflex"><a href="{% url 'main' %}"><img class='logo' src="{% static 'images/logo.png' %}"></a></li>
             <li><a class='topmenu' href="{% url 'cars' %}">Автомобілі</a></li>
             <li><a class='topmenu' href="{% url 'sellers' %}">Продавці</a></li>
+            {% if not  request.user.is_authenticated %}
+            <li class="user_link"><a style='line-height: 0px;' class="topmenu" href="{% url 'login' %}"><img id="dark" style="display: none;" class='user_img' src="{% static 'images/user_dark.png' %}"><img id='light' class='user_img' src="{% static 'images/user.png' %}"></a></li>
+            {% else %}
             <li class="user_link"><a style='line-height: 0px;' class="topmenu" href="{% url 'profile' %}"><img id="dark" style="display: none;" class='user_img' src="{% static 'images/user_dark.png' %}"><img id='light' class='user_img' src="{% static 'images/user.png' %}"></a></li>
+            {% endif %}
             {% endblock %}
         </ul>
     </div></nav>

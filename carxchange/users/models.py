@@ -13,3 +13,4 @@ class CarUser(AbstractUser):
     region = models.CharField(max_length=3, choices=REGION_CHOICES)
     contacts = models.CharField(max_length=150)
     picture = models.ImageField(upload_to='profile_pictures/')
+    cars_added = models.IntegerField(default=0)

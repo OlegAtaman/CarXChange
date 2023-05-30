@@ -5,10 +5,68 @@
             <li class="logoflex"><a href="{% url 'main' %}"><img class='logo' src="{% static 'images/logo.png' %}"></a></li>
             <li><a class='topmenu selectedpage' href="{% url 'cars' %}">Автомобілі</a></li>
             <li><a class='topmenu' href="{% url 'sellers' %}">Продавці</a></li>
+            {% if not request.user.is_authenticated %}
+            <li class="user_link"><a style='line-height: 0px;' class="topmenu" href="{% url 'login' %}"><img id="dark" style="display: none;" class='user_img' src="{% static 'images/user_dark.png' %}"><img id='light' class='user_img' src="{% static 'images/user.png' %}"></a></li>
+            {% else %}
             <li class="user_link"><a style='line-height: 0px;' class="topmenu" href="{% url 'profile' %}"><img id="dark" style="display: none;" class='user_img' src="{% static 'images/user_dark.png' %}"><img id='light' class='user_img' src="{% static 'images/user.png' %}"></a></li>
-{% endblock %}
+            {% endif %}
+            {% endblock %}
 {% block 'content' %}
 <div class="main">
+    <script>
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === name + '=') {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+                }
+            }
+            return cookieValue;
+            }
+        function toggleFavorite(element, carId) {
+            console.log(carId);
+          var img = element.querySelector('img');
+          var csrftoken = getCookie('csrftoken');
+          // Make an AJAX request to add/remove the car from user's favorites
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", "{% url 'toggle_favorite' %}", true);
+          xhr.setRequestHeader("Content-Type", "application/json");
+          xhr.setRequestHeader('X-CSRFToken', csrftoken);
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+              // Update the image source based on the response
+              var response = JSON.parse(xhr.responseText);
+              if (response.is_favorite) {
+                img.src = "{% static 'images/fav_mark.png' %}";
+              } else {
+                img.src = "{% static 'images/fav_unmark.png' %}";
+              }
+            }
+          };
+        
+          // Send the carId in the request body
+          var data = JSON.stringify({ car_id: carId });
+          console.log(data);
+          xhr.send(data);
+        }
+    </script>
+    <script>
+        $(document).ready(function(){
+            $('.unclicked').on( "click", function(){
+                console.log(1);
+                console.log(this);
+                console.log(this.children[0])
+                $(this).children[0].remve();
+                console.log(2);
+                $(this).append("<img src='" + "{% static 'images/fav_unmark.png' %}" + "'>");
+            });
+        });
+    </script>
     <script>
         $(document).ready(function(){
             $('.user_link').hover(function(){
@@ -112,8 +170,13 @@
             <input class="subbutton" type="submit" value="">
         </form>
         <div class="switcher">
-            <button class="rec_or_saved_selected rec_or_saved_l">Рекомендації</button>
-            <button class="rec_or_saved_r">Збережене</button>
+            {% if not fav %}
+            <a href="{% url 'cars' %}?{{ request.GET|removetags:'page,fav' }}"><button class="rec_or_saved_selected rec_or_saved_l">Рекомендації</button></a>
+            <a href="{% url 'cars' %}?{{ request.GET|removetags:'page,fav' }}&fav=True"><button class="rec_or_saved_r">Збережене</button></a>
+            {% else %}
+            <a href="{% url 'cars' %}?{{ request.GET|removetags:'page,fav' }}"><button class="rec_or_saved_l">Рекомендації</button></a>
+            <a href="{% url 'cars' %}?{{ request.GET|removetags:'page,fav' }}&fav=True"><button class="rec_or_saved_selected rec_or_saved_r">Збережене</button></a>
+            {% endif %}
         </div>
     </div>
 
@@ -161,18 +224,26 @@
     <!-- <h1 style="padding: 3% 20% 0% 20%; text-align: center;">Наш доступний авторяд:</h1> -->
     <div class="catholder">
         {% for car in cars %}
-        <div class="carad">
-            <img class="carpreview" src="{{ car.picture.url }}">
-            <h3>{{ car.title }}</h3>
-            <span>
+            <div class="carad">
+                
+                <a class="pinmetotr" onclick="toggleFavorite(this, '{{ car.id }}')">
+                {% if car in fav_cars %}
+                    <img id="favImage_{{ car.id }}" src="{% static 'images/fav_mark.png' %}">
+                {% else %}
+                    <img id="favImage_{{ car.id }}" src="{% static 'images/fav_unmark.png' %}">
+                {% endif %}
+                </a>
+                <img style="max-height: 300px; min-height: 200px;" class="carpreview" src="{{ car.picture.url }}">
+                <h3>{{ car.title }}</h3>
+                <span>
                 <p>Ціна: {{ car.price }} грн</p>
                 <p>Пробіг: {{ car.runtime }} км</p>
-            <div class="carad_buttons">
-            <a class="detailcat seller" href="{% url 'seller' car.owner.id %}">Більше від продавця</a>
-            <a style='background-color: #FFCA11;' class="detailcat gotoadd" href="{% url 'car' car.id %}">Переглянути</a>
+                <div class="carad_buttons">
+                    <a class="detailcat seller" href="{% url 'seller' car.owner.id %}">Більше від продавця</a>
+                    <a style='background-color: #FFCA11;' class="detailcat gotoadd" href="{% url 'car' car.id %}">Переглянути</a>
+                </div>
+                </span>
             </div>
-            </span>
-        </div>
         {% endfor %}
     </div>
     <div class="pages">

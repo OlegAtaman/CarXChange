@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block 'content' %}
+<div class="bgcont">    
+    <div style="text-align: center;" class="marginforffh finalformholder"><form method="post" name="delete">
+        {% csrf_token %}
+        <h2>Видалити оголошення про автомобіль {{ title }}?</h2>
+        <p><button type="submit">Видалити</button><a href="{% url 'profile' %}"><button type="button" style="background-color: grey;margin-left:10px">Назад</button></a></p>
+    </form></div>
+</div>
+{% endblock %}

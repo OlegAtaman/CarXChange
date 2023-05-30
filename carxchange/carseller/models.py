@@ -14,7 +14,7 @@ class Car(models.Model):
     fuel = models.CharField(max_length=3, choices=FUEL_CHOICES)
     accidents = models.CharField(max_length=3, choices=ACCIDENTS_CHOICES)
     brand = models.CharField(max_length=3, choices=BRAND_CHOICES)
-    transmisson = models.CharField(max_length=3, choices=TRANS_CHOICES)
+    transmission = models.CharField(max_length=3, choices=TRANS_CHOICES)
     description = models.TextField(max_length=1000)
     picture = models.ImageField(upload_to='car_pictures/')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

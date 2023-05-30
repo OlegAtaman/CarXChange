@@ -377,6 +377,16 @@ a:link.detailseller, a:visited.detailseller {
     border-radius: 5px;
     background-color: #D9D9D9;
 }
+.pinmetotr {
+    top: 10px;
+    right: 10px;
+    display: block;
+    position: absolute;
+}
+.pinmetotr img {
+    width: 30px;
+    height: 30px;
+}
 .minicarad span p {
     margin: 5px 10px 10px 10px;
 }

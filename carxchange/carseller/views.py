@@ -4,6 +4,9 @@ from django.contrib.auth import get_user_model
 from random import randrange
 from django.core.files import File
 from django.db.models import Q
+from django.http import HttpResponseForbidden, JsonResponse
+import json
+
 
 from .filter import filter
 from django.conf import settings
@@ -44,6 +47,9 @@ class NewCarAdd(View):
             car = form.save(commit=False)
             car.owner = request.user
             car.save()
+            car.owner.cars_added += 1
+            car.owner.save()
+            return redirect('profile')
 
         ctx = {"form": form}
         return render(request, self.template, ctx)
@@ -65,18 +71,25 @@ def carview(request, pk):
     return render(request, 'carseller/carview.html', {'car':car})
 
 def carlist(request):
+    favsearch = False
     cars = Car.objects.all()
     if request.GET.get('page'):
         page = int(request.GET.get('page'))
     else:
         page = 1
+    if request.GET.get('fav'):
+        cars = request.user.fav_cars.all()
+        favsearch = True
     cars = filter(cars, request.GET)
     pages = len(cars)//10+1
     cars = cars[10*(page-1):10*page]
-    print(len(cars))
-    
-    print(pages)
+    favs = []
+    for car in cars:
+        if car in request.user.fav_cars.all():
+            favs.append(car)
     ctx = {
+        'fav': favsearch,
+        'fav_cars': favs,
         'page': page,
         'prev': page-1,
         'next': page+1,
@@ -91,12 +104,16 @@ def carlist(request):
     return render(request, 'carseller/cars.html', ctx)
 
 def sellerlist(request):
+    favsearch = False
     user_model = get_user_model()
     sellers = user_model.objects.filter(is_staff=False)
     if request.GET.get('page'):
         page = int(request.GET.get('page'))
     else:
         page = 1
+    if request.GET.get('fav'):
+        sellers = request.user.fav_sellers.all()
+        favsearch = True
     if request.GET.get('search'):
         search = request.GET.get('search')[0].lower()
         search_filter = Q(full_name__icontains=search)
@@ -105,7 +122,13 @@ def sellerlist(request):
         sellers = sellers.filter(search_filter)
     pages = len(sellers)//15+1
     sellers = sellers[15*(page-1):15*page]
+    favs = []
+    for seller in sellers:
+        if seller in request.user.fav_sellers.all():
+            favs.append(seller)
     ctx = {
+        'fav': favsearch,
+        'fav_sellers': favs,
         'prev': page-1,
         'next': page+1,
         'page': page,
@@ -144,10 +167,81 @@ def fill_db_view(request):
     #             fuel=ch.FUEL_CHOICES[randrange(len(ch.FUEL_CHOICES))][0],
     #             accidents=ch.ACCIDENTS_CHOICES[randrange(len(ch.ACCIDENTS_CHOICES))][0],
     #             brand=ch.BRAND_CHOICES[randrange(len(ch.BRAND_CHOICES))][0],
-    #             transmisson=ch.TRANS_CHOICES[randrange(len(ch.TRANS_CHOICES))][0],
+    #             transmission=ch.TRANS_CHOICES[randrange(len(ch.TRANS_CHOICES))][0],
     #             description=get_string(100, True), owner=users[randrange(len(users))])
     #     car.picture.save(get_string(10)+'.png', File(open(settings.MEDIA_ROOT +'/car_pictures/car.png', 'rb')))
     #     car.save()
 
     return redirect('main')
 
+def fixnum(request):
+    # cars = Car.objects.all()
+    # users = CarUser.objects.filter(is_staff=False)
+    # print(len(cars))
+    # print(len(users))
+    # for user in users:
+    #     mini_cars = cars.filter(owner=user)
+    #     print(len(mini_cars))
+    #     user.cars_added = len(mini_cars)
+    #     user.save()
+    return redirect('sellers')
+
+def deletecar(request, pk):
+    if request.user == Car.objects.get(id=pk).owner:
+        if request.method == 'POST':
+            Car.objects.get(id=pk).delete()
+            return redirect('profile')
+        return render(request, 'carseller/delete.html', {'title':Car.objects.get(id=pk).title})
+    return HttpResponseForbidden()
+
+def toggle_favorite(request):
+    if request.method == 'POST':
+        body_unicode = request.body.decode('utf-8')
+        body_data = json.loads(body_unicode)
+
+        car_id = body_data.get('car_id')
+        # Retrieve the logged-in user
+        user = request.user
+
+        # Retrieve the car object
+        try:
+            car = Car.objects.get(id=car_id)
+        except Car.DoesNotExist:
+            print(1)
+            return JsonResponse({'error': 'Car not found'}, status=404)
+
+        # Toggle the favorite status for the user
+        if car in user.fav_cars.all():
+            user.fav_cars.remove(car)
+            is_favorite = False
+        else:
+            user.fav_cars.add(car)
+            is_favorite = True
+
+        return JsonResponse({'is_favorite': is_favorite})
+    
+
+def toggle_favorite_sellers(request):
+    if request.method == 'POST':
+        body_unicode = request.body.decode('utf-8')
+        body_data = json.loads(body_unicode)
+
+        seller_id = body_data.get('seller_id')
+        # Retrieve the logged-in user
+        user = request.user
+
+        # Retrieve the car object
+        try:
+            seller = CarUser.objects.get(id=seller_id)
+        except CarUser.DoesNotExist:
+            return JsonResponse({'error': 'Seller not found'}, status=404)
+
+        # Toggle the favorite status for the user
+        if seller in user.fav_sellers.all():
+            user.fav_sellers.remove(seller)
+            is_favorite = False
+        else:
+            user.fav_sellers.add(seller)
+            is_favorite = True
+
+        return JsonResponse({'is_favorite': is_favorite})

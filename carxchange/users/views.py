@@ -21,6 +21,7 @@ class Register(View):
             password = form.cleaned_data.get("password1")
             user = authenticate(username=username, password=password)
             login(request, user)
+            return redirect('profile')
 
         ctx = {"form": form}
         return render(request, self.template_name, ctx)
