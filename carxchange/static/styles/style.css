@@ -548,6 +548,12 @@ a:link.detailseller, a:visited.detailseller {
     line-height : 40px;
     border-radius: 5px;
 }
+.editprofilejsimg {
+    height: 25px;
+    margin-left: 10px;
+}
+
+
 /* .pages input:hover {
     background-color: white;
     color:red;
@@ -582,7 +588,7 @@ a:link.detailseller, a:visited.detailseller {
 .detailholder h1 {
     margin-top: 0;
 }
-.detailholder img {
+.sellerimg {
     height: 300px;
     float: left;
     border-radius: 5px;

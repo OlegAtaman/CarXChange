@@ -245,3 +245,20 @@ def toggle_favorite_sellers(request):
             is_favorite = True
 
         return JsonResponse({'is_favorite': is_favorite})
+
+
+def change_user(request):
+    body_unicode = request.body.decode('utf-8')
+    body_data = json.loads(body_unicode)
+    name = body_data.get('full_name')
+    cont = body_data.get('contacts')
+    region = body_data.get('region')
+    if name:
+        request.user.full_name = name
+    if cont:
+        request.user.contacts = cont
+    if region:
+        request.user.region = region
+    request.user.save()
+    return JsonResponse({})
+

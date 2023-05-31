@@ -3,13 +3,27 @@
 {% block 'content' %}
 <div class="">
     <div class="main">
+        <script>
+            function switchtofield (field) {
+                var parent = field.parentElement;
+                parent.innerHTML = "";
+                if (parent.id == 'name') {
+                    parent.innerHTML = "<input id='get_new_name' type='text' class='profileeditinput'><button class='profileeditbutton'>Підтвердити</button><button class='profileeditbutton' onclick='setback(this)'>Скасувати</button>"
+                } else if (parent.id == 'contacts') {
+                    parent.innerHTML = "<input id='get_new_contacts' type='text' class='profileeditinput'><button class='profileeditbutton'>Підтвердити</button><button class='profileeditbutton' onclick='setback(this)'>Скасувати</button>"
+                } else if (parent.id == 'region') {
+                    parent.innerHTML = "<input id='get_new_region' type='text' class='profileeditinput'><button class='profileeditbutton'>Підтвердити</button><button class='profileeditbutton' onclick='setback(this)'>Скасувати</button>"
+                };
+            };
+        </script>
         <div class="detailholder">
-            <img src="{{ seller.picture.url }}">
-            <br><h1>{{ seller.full_name }}</h1>
+            <img class="sellerimg" src="{{ seller.picture.url }}">
+            <br><h1 id="name">{{ seller.full_name }}<a class="editprofilejs" onclick="switchtofield(this)"><img class="editprofilejsimg" style="height: 30px;" src="{% static 'images/edit.png' %}"></a></h1>
             <div style="height: 200px;" class="maininfo">
             
-            <p>Локація: {{ seller.get_region_display }}</p>
+            <p id="region">Локація: {{ seller.get_region_display }}<a class="editprofilejs" onclick="switchtofield(this)"><img class="editprofilejsimg" src="{% static 'images/edit.png' %}"></a></p>
             <p>Всього оголошень створено: {{ seller.cars_added }}</p>
+            <p id="contacts">Контакти: {{ seller.contacts }}<a class="editprofilejs" onclick="switchtofield(this)"><img class="editprofilejsimg" src="{% static 'images/edit.png' %}"></a></p>
             <p>Активних оголошень: {{ car_count }}</p>
             <p><a style='background-color: #FFCA11; width: 300px;' class="detailseller" href="{% url 'logout' %}">Вийти з аккаунту</a></p>
         </div>

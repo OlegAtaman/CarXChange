@@ -4,11 +4,12 @@
 <div class="">
     <div class="main">
         <div class="detailholder">
-            <img src="{{ seller.picture.url }}">
+            <img class="sellerimg" src="{{ seller.picture.url }}">
             <br><h1>{{ seller.full_name }}</h1>
             <div style="height: 200px;" class="maininfo">
             <p>Локація: {{ seller.get_region_display }}</p>
             <p>Всього оголошень створено: {{ seller.cars_added }}</p>
+            <p>Контакти: {{ seller.contacts }}</p>
             <p>Активних оголошень: {{ car_count }}</p>
         </div>
         </div>
