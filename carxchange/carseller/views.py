@@ -25,6 +25,7 @@ def profile(request):
     cars = Car.objects.filter(owner=user)
     count = len(cars)
     ctx = {
+        'reg_choices': REGION_CHOICES,
         'seller': user,
         'cars': cars,
         'car_count': count
@@ -220,7 +221,6 @@ def toggle_favorite(request):
 
         return JsonResponse({'is_favorite': is_favorite})
     
-
 def toggle_favorite_sellers(request):
     if request.method == 'POST':
         body_unicode = request.body.decode('utf-8')
@@ -246,8 +246,8 @@ def toggle_favorite_sellers(request):
 
         return JsonResponse({'is_favorite': is_favorite})
 
-
 def change_user(request):
+    ctx = {}
     body_unicode = request.body.decode('utf-8')
     body_data = json.loads(body_unicode)
     name = body_data.get('full_name')
@@ -259,6 +259,7 @@ def change_user(request):
         request.user.contacts = cont
     if region:
         request.user.region = region
+        ctx = {"updt":request.user.get_region_display()}
     request.user.save()
-    return JsonResponse({})
+    return JsonResponse(ctx)
 

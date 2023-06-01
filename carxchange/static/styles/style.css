@@ -669,6 +669,31 @@ a:link.detailseller, a:visited.detailseller {
     border-radius: 5px;
     font-size: 25px;
 }
+#get_new_region {
+    height: 33px;
+    min-width: 150px;
+    background-color: #EDEDED;
+    border-radius: 5px;
+    font-size: 25px;
+}
+#get_new_name, #get_new_contacts {
+    height: 33px;
+    min-width: 150px;
+    background-color: #EDEDED;
+    border-radius: 5px;
+    font-size: 25px;
+}
+.profileeditbutton {
+    background-color:#FFCA11;
+    border-width: 1px;
+    border-radius: 5px;
+    width: 150px;
+    text-align: center;
+    font-size: 25px;
+    line-height: 38px;
+    margin-bottom: 10px;
+}
+
 .finalformholder textarea {
     background-color: #EDEDED;
     border-radius: 5px;
