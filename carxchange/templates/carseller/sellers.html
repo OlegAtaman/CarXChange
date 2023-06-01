@@ -160,10 +160,12 @@
         {% for seller in sellers %}
         <div class="selleradd carad">
             <a class="pinmetotr" onclick="toggleFavorite(this, '{{ seller.id }}')">
-                {% if seller in fav_sellers %}
-                    <img id="favImage_{{ seller.id }}" src="{% static 'images/fav_mark.png' %}">
-                {% else %}
-                    <img id="favImage_{{ seller.id }}" src="{% static 'images/fav_unmark.png' %}">
+                {% if request.user.is_authenticated %}
+                    {% if seller in fav_sellers %}
+                        <img id="favImage_{{ seller.id }}" src="{% static 'images/fav_mark.png' %}">
+                    {% else %}
+                        <img id="favImage_{{ seller.id }}" src="{% static 'images/fav_unmark.png' %}">
+                    {% endif %}
                 {% endif %}
             </a>
             <img style="max-height: 300px; min-height: 150px;" class="sellpreview" src="{{ seller.picture.url }}">

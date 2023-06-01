@@ -227,10 +227,12 @@
             <div class="carad">
                 
                 <a class="pinmetotr" onclick="toggleFavorite(this, '{{ car.id }}')">
-                {% if car in fav_cars %}
-                    <img id="favImage_{{ car.id }}" src="{% static 'images/fav_mark.png' %}">
-                {% else %}
-                    <img id="favImage_{{ car.id }}" src="{% static 'images/fav_unmark.png' %}">
+                {% if request.user.is_authenticated %}
+                    {% if car in fav_cars %}
+                        <img id="favImage_{{ car.id }}" src="{% static 'images/fav_mark.png' %}">
+                    {% else %}
+                        <img id="favImage_{{ car.id }}" src="{% static 'images/fav_unmark.png' %}">
+                    {% endif %}
                 {% endif %}
                 </a>
                 <img style="max-height: 300px; min-height: 200px;" class="carpreview" src="{{ car.picture.url }}">

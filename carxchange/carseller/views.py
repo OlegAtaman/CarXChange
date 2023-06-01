@@ -1,15 +1,12 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth import get_user_model
-from random import randrange
-from django.core.files import File
 from django.db.models import Q
 from django.http import HttpResponseForbidden, JsonResponse
 import json
 
 
 from .filter import filter
-from django.conf import settings
 from .models import Car
 from .forms import CarForm
 import carseller.choices as ch
@@ -21,6 +18,8 @@ def index(request):
     return render(request, 'carseller/index.html')
 
 def profile(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
     user = request.user
     cars = Car.objects.filter(owner=user)
     count = len(cars)
@@ -33,15 +32,20 @@ def profile(request):
     return render(request, 'carseller/profile.html', ctx)
 
 class NewCarAdd(View):
+    
     template = 'carseller/newadd.html'
     
     def get(self, request):
+        if not request.user.is_authenticated:
+            return redirect('login')
         ctx = {
             'form':CarForm()
         }
         return render(request, self.template, ctx)
 
     def post(self, request):
+        if not request.user.is_authenticated:
+            return redirect('login')
         form = CarForm(request.POST, request.FILES)
 
         if form.is_valid():
@@ -78,16 +82,17 @@ def carlist(request):
         page = int(request.GET.get('page'))
     else:
         page = 1
-    if request.GET.get('fav'):
+    if request.GET.get('fav') and request.user.is_authenticated:
         cars = request.user.fav_cars.all()
         favsearch = True
     cars = filter(cars, request.GET)
     pages = len(cars)//10+1
     cars = cars[10*(page-1):10*page]
     favs = []
-    for car in cars:
-        if car in request.user.fav_cars.all():
-            favs.append(car)
+    if request.user.is_authenticated:
+        for car in cars:
+            if car in request.user.fav_cars.all():
+                favs.append(car)
     ctx = {
         'fav': favsearch,
         'fav_cars': favs,
@@ -112,7 +117,7 @@ def sellerlist(request):
         page = int(request.GET.get('page'))
     else:
         page = 1
-    if request.GET.get('fav'):
+    if request.GET.get('fav') and request.user.is_authenticated:
         sellers = request.user.fav_sellers.all()
         favsearch = True
     if request.GET.get('search'):
@@ -124,9 +129,10 @@ def sellerlist(request):
     pages = len(sellers)//15+1
     sellers = sellers[15*(page-1):15*page]
     favs = []
-    for seller in sellers:
-        if seller in request.user.fav_sellers.all():
-            favs.append(seller)
+    if request.user.is_authenticated:
+        for seller in sellers:
+            if seller in request.user.fav_sellers.all():
+                favs.append(seller)
     ctx = {
         'fav': favsearch,
         'fav_sellers': favs,
@@ -137,55 +143,6 @@ def sellerlist(request):
         'sellers': sellers
     }
     return render(request, 'carseller/sellers.html', ctx)
-
-def fill_db_view(request):
-    
-    letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ '
-
-    # def get_string(length, with_space=False):
-    #     string = ''
-    #     if with_space:
-    #         for i in range(length):
-    #             string += letters[randrange(len(letters))]
-    #     else:
-    #         for i in range(length):
-    #             string += letters[randrange(len(letters)-1)]
-    #     return string
-
-    # for i in range(50):
-    #     user = CarUser(username=get_string(15), password='K'+get_string(15)+'1', 
-    #                 full_name=get_string(20), region=REGION_CHOICES[randrange(len(REGION_CHOICES))][0],
-    #                 contacts=get_string(30), email=get_string(15)+'@gmail.com'
-    #                 )
-    #     user.picture.save(get_string(10)+'.png', File(open(settings.MEDIA_ROOT + '/profile_pictures/sellersample.jpeg', 'rb')))
-    #     user.save()
-
-    # users = CarUser.objects.filter(is_staff=False)
-
-    # for i in range(300):
-    #     car = Car(title=get_string(15), price=randrange(1500000), runtime=randrange(1000000),
-    #             color=get_string(2), wheel=ch.WHEEL_CHOICES[randrange(len(ch.WHEEL_CHOICES))][0],
-    #             fuel=ch.FUEL_CHOICES[randrange(len(ch.FUEL_CHOICES))][0],
-    #             accidents=ch.ACCIDENTS_CHOICES[randrange(len(ch.ACCIDENTS_CHOICES))][0],
-    #             brand=ch.BRAND_CHOICES[randrange(len(ch.BRAND_CHOICES))][0],
-    #             transmission=ch.TRANS_CHOICES[randrange(len(ch.TRANS_CHOICES))][0],
-    #             description=get_string(100, True), owner=users[randrange(len(users))])
-    #     car.picture.save(get_string(10)+'.png', File(open(settings.MEDIA_ROOT +'/car_pictures/car.png', 'rb')))
-    #     car.save()
-
-    return redirect('main')
-
-def fixnum(request):
-    # cars = Car.objects.all()
-    # users = CarUser.objects.filter(is_staff=False)
-    # print(len(cars))
-    # print(len(users))
-    # for user in users:
-    #     mini_cars = cars.filter(owner=user)
-    #     print(len(mini_cars))
-    #     user.cars_added = len(mini_cars)
-    #     user.save()
-    return redirect('sellers')
 
 def deletecar(request, pk):
     if request.user == Car.objects.get(id=pk).owner:
