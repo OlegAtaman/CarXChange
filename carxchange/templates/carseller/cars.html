@@ -170,12 +170,14 @@
             <input class="subbutton" type="submit" value="">
         </form>
         <div class="switcher">
+            {% if request.user.is_authenticated %}
             {% if not fav %}
             <a href="{% url 'cars' %}?{{ request.GET|removetags:'page,fav' }}"><button class="rec_or_saved_selected rec_or_saved_l">Рекомендації</button></a>
             <a href="{% url 'cars' %}?{{ request.GET|removetags:'page,fav' }}&fav=True"><button class="rec_or_saved_r">Збережене</button></a>
             {% else %}
             <a href="{% url 'cars' %}?{{ request.GET|removetags:'page,fav' }}"><button class="rec_or_saved_l">Рекомендації</button></a>
             <a href="{% url 'cars' %}?{{ request.GET|removetags:'page,fav' }}&fav=True"><button class="rec_or_saved_selected rec_or_saved_r">Збережене</button></a>
+            {% endif %}
             {% endif %}
         </div>
     </div>

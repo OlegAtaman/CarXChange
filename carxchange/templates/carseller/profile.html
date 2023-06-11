@@ -26,6 +26,16 @@
 
             function switchtofield (field) {
                 var parent = field.parentElement;
+                if (parent.id == 'name') {
+                    getbackval = parent.textContent.trim();
+                } else if (parent.id == 'contacts') {
+                    getbackval_raw = parent.textContent.trim();
+                    start = getbackval_raw.indexOf('Контакти: ');
+                    getbackval = getbackval_raw.substring(10, getbackval_raw.length).trim();
+                } else if (parent.id == 'region') {
+                    getbackval_raw = parent.textContent.trim();
+                    getbackval = getbackval_raw.substring(9, getbackval_raw.length).trim();
+                };
                 parent.innerHTML = "";
                 reg_html = `
                 <select id='get_new_region' autocomplete="country">
@@ -35,22 +45,22 @@
                 </select>
                 `
                 if (parent.id == 'name') {
-                    parent.innerHTML = "<input id='get_new_name' type='text' class='profileeditinput'><button style='width:170px;margin:5px' id='name-edit-b' onclick='editfield(this)' class='profileeditbutton'>Підтвердити</button><button style='background:grey' class='profileeditbutton' onclick='setback(this)'>Скасувати</button>"
+                    parent.innerHTML = "<input id='get_new_name' type='text' class='profileeditinput'><button style='width:170px;margin:5px' id='name-edit-b' onclick='editfield(this)' class='profileeditbutton'>Підтвердити</button><button style='background:grey' class='profileeditbutton' onclick='setback(this, getbackval)'>Скасувати</button>"
                 } else if (parent.id == 'contacts') {
-                    parent.innerHTML = "<input id='get_new_contacts' type='text' class='profileeditinput'><button style='width:170px;margin:5px' id='contacts-edit-b' onclick='editfield(this)' class='profileeditbutton'>Підтвердити</button><button style='background:grey' class='profileeditbutton' onclick='setback(this)'>Скасувати</button>"
+                    parent.innerHTML = "<input id='get_new_contacts' type='text' class='profileeditinput'><button style='width:170px;margin:5px' id='contacts-edit-b' onclick='editfield(this)' class='profileeditbutton'>Підтвердити</button><button style='background:grey' class='profileeditbutton' onclick='setback(this, getbackval)'>Скасувати</button>"
                 } else if (parent.id == 'region') {
-                    parent.innerHTML = reg_html+"<button style='width:170px;margin:5px' id='region-edit-b' onclick='editfield(this)' class='profileeditbutton'>Підтвердити</button><button style='background:grey' class='profileeditbutton' onclick='setback(this)'>Скасувати</button>"
+                    parent.innerHTML = reg_html+"<button style='width:170px;margin:5px' id='region-edit-b' onclick='editfield(this)' class='profileeditbutton'>Підтвердити</button><button style='background:grey' class='profileeditbutton' onclick='setback(this, getbackval)'>Скасувати</button>"
                 };
             };
-            function setback(field) {
+            function setback(field, val) {
                 var parent = field.parentElement;
                 parent.innerHTML = "";
                 if (parent.id == 'name') {
-                    parent.innerHTML = "{{ seller.full_name }}<a class='editprofilejs' onclick='switchtofield(this)'><img class='editprofilejsimg' style='height: 30px;' src='{% static 'images/edit.png' %}'></a>"
+                    parent.innerHTML = val + "<a class='editprofilejs' onclick='switchtofield(this)'><img class='editprofilejsimg' style='height: 30px;' src='{% static 'images/edit.png' %}'></a>"
                 } else if (parent.id == 'contacts') {
-                    parent.innerHTML = "Контакти: {{ seller.contacts }}<a class='editprofilejs' onclick='switchtofield(this)'><img class='editprofilejsimg' src='{% static 'images/edit.png' %}'></a>"
+                    parent.innerHTML = "Контакти: " + val + "<a class='editprofilejs' onclick='switchtofield(this)'><img class='editprofilejsimg' src='{% static 'images/edit.png' %}'></a>"
                 } else if (parent.id == 'region') {
-                    parent.innerHTML = "Локація: {{ seller.get_region_display }}<a class='editprofilejs' onclick='switchtofield(this)'><img class='editprofilejsimg' src='{% static 'images/edit.png' %}'></a>"
+                    parent.innerHTML = "Локація: " + val + "<a class='editprofilejs' onclick='switchtofield(this)'><img class='editprofilejsimg' src='{% static 'images/edit.png' %}'></a>"
                 };
             };
             function editfield(button) {
@@ -65,6 +75,7 @@
                 } else if (button.id == 'region-edit-b') {
                     var arg = document.getElementById('get_new_region').value;
                     var result = respfunc({"region": arg});
+                    console.log(result)
                     var val = result.then(function(result) {
                         var updtValue = result.updt;
                         button.parentElement.innerHTML = "Локація: " + updtValue + "<a class='editprofilejs' onclick='switchtofield(this)'><img class='editprofilejsimg' src='{% static 'images/edit.png' %}'></a>" 
@@ -73,11 +84,55 @@
                 
             }
         </script>
+        <script>
+            async function changeavefunc(data) {
+                    const result = await fetch(
+                        '{{ request.path }}/updt_ave', {
+                        method: 'POST',
+                        headers:{"X-CSRFToken":csrftoken},
+                        body: data
+                        }); 
+                    return result.json();
+            };
+            function switchave(field) {
+                const parent = field.parentElement
+                const edlink = document.getElementById('editavejs')
+                edlink.remove()
+                uplbut = '<input type="file" style="display:none" name="picture" accept="image/jpeg, image/jpg" required="" id="id_picture"><label style="margin-right: 10px;line-height: 38px;height: 38px;" class="profilephotolabel" for="id_picture">Завантажити</label>'
+                subbut = "<button style='width:auto; margin-bottom:0px' class='profileeditbutton' onclick='switchaveajax(this)'>Підтвердити</button>"
+                canbut = '<a id="canceditavejs" class="pinmetotl" onclick="cancswitchave(this)"><img class="editprofilejsimg" src="' + "{% static 'images/cancel.png' %}" + '"></a>'
+                parent.innerHTML += uplbut + subbut + canbut
+            };
+            function cancswitchave(field) {
+                const parent = field.parentElement
+                const ave = document.getElementById('avatar').outerHTML
+                const editbuttton = '<a id="editavejs" class="pinmetotl" onclick="switchave(this)"><img class="editprofilejsimg" src=' + "{% static 'images/edit.png' %}" + '></a>'
+                parent.innerHTML = editbuttton + ave
+            };
+            function switchaveajax(field) {
+                const parent = field.parentElement
+                const image = document.getElementById('id_picture').files[0]
+                const formData = new FormData();
+                formData.append('image', image, image.name);
+                const new_img = changeavefunc(formData)
+                const val = new_img.then(function(new_img) {
+                        var updtave = new_img.utd_img;
+                        console.log(updtave)
+                        parent.innerHTML = `
+                        <a id="editavejs" class="pinmetotl" onclick="switchave(this)"><img class="editprofilejsimg" src="{% static 'images/edit.png' %}"></a>
+                        <img style="margin-top:20px" id="avatar" class="sellerimg" src="` + updtave + `">
+                        `
+                    });
+            };
+        </script>
         <div class="detailholder">
-            <img class="sellerimg" src="{{ seller.picture.url }}">
+            <div class="avatarholder">
+                <a id="editavejs" class="pinmetotl" onclick="switchave(this)"><img class="editprofilejsimg" src="{% static 'images/edit.png' %}"></a>
+                <img style="margin-top:20px" id="avatar" class="sellerimg" src="{{ seller.picture.url }}">
+            </div>
             <br><h1 id="name">{{ seller.full_name }}<a class="editprofilejs" onclick="switchtofield(this)"><img class="editprofilejsimg" style="height: 30px;" src="{% static 'images/edit.png' %}"></a></h1>
-            <div style="height: 200px;" class="maininfo">
-            
+            <!-- <div style="height: 200px;" class="maininfo"> -->
+            <div class="maininfo">
             <p id="region">Локація: {{ seller.get_region_display }}<a class="editprofilejs" onclick="switchtofield(this)"><img class="editprofilejsimg" src="{% static 'images/edit.png' %}"></a></p>
             <p>Всього оголошень створено: {{ seller.cars_added }}</p>
             <p id="contacts">Контакти: {{ seller.contacts }}<a class="editprofilejs" onclick="switchtofield(this)"><img class="editprofilejsimg" src="{% static 'images/edit.png' %}"></a></p>
@@ -85,8 +140,8 @@
             <p><a style='background-color: #FFCA11; width: 300px;' class="detailseller" href="{% url 'logout' %}">Вийти з аккаунту</a></p>
         </div>
         </div>
-        <div style="margin-top: 70px;" class="desc">
-            <h2 style="text-align: center;">Активні оголошення:</h2>
+        <div class="desc">
+            <h2 style="text-align: center;margin-top: 0px;">Активні оголошення:</h2>
             <div class="minicarholder">
                 {% for car in cars %}
                 <div class="minicarad">

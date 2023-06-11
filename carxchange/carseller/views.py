@@ -220,3 +220,12 @@ def change_user(request):
     request.user.save()
     return JsonResponse(ctx)
 
+def changeave(request):
+    # body_unicode = request.body.decode('utf-8')
+    # body_data = json.loads(body_unicode)
+    image = request.FILES['image']
+    user = request.user
+    user.picture = image
+    user.save()
+    ctx = {'utd_img':user.picture.url}
+    return JsonResponse(ctx)

@@ -11,7 +11,7 @@
             <p>Ім'я: {{ form.full_name }}</p>
             <p>Контакти: {{ form.contacts }}</p>
             <p>Регіон: {{ form.region }}</p>
-            <p>Фото профілю: {{ form.picture }}
+            <p>Фото профілю: <input type="file" name="picture" accept="image/jpeg, image/jpg" required="" id="id_picture">
             <label class="profilephotolabel" for="id_picture">-Завантажити-</label></p>
             {{ form.errors }}
             <button type="submit">Зареєструватися</button>

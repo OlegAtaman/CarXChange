@@ -4,16 +4,14 @@
 <div class="">
     <div class="main">
         <div class="detailholder">
-            <img src="{{ car.picture.url }}">
-            <br><h1>{{ car.title }}</h1>
-            <div class="maininfo">
-            
-            <p>Пробіг: {{ car.runtime }} км</p>
-            <p>Ціна: {{ car.price }} грн</p>
-            <p>Продавець: {{ car.owner.full_name }}, {{ car.owner.get_region_display }}</p></div>
+            <img style="border-radius:5px" src="{{ car.picture.url }}">
         </div>
         <div class="desc">
-            <h2>Опис:</h2>
+            <h1>{{ car.title }}</h1>
+            <p>Пробіг: {{ car.runtime }} км</p>
+            <p>Ціна: {{ car.price }} грн</p>
+            <p>Продавець: {{ car.owner.full_name }}, {{ car.owner.get_region_display }}</p>
+            <h2 style="margin-top:0px">Опис:</h2>
             <p>{{ car.description }}</p>
             <h2>Характеристики</h2>
                 <p>Двигун - {{ car.get_fuel_display }}</p>

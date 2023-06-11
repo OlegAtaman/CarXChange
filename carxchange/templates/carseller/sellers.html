@@ -146,12 +146,14 @@
             <input class="subbutton" type="submit" value="">
         </form>
         <div class="switcher">
+            {% if request.user.is_authenticated %}
             {% if not fav %}
             <a href="{% url 'sellers' %}?{{ request.GET|removetags:'page,fav' }}"><button class="rec_or_saved_selected rec_or_saved_l">Рекомендації</button></a>
             <a href="{% url 'sellers' %}?{{ request.GET|removetags:'page,fav' }}&fav=True"><button class="rec_or_saved_r">Збережене</button></a>
             {% else %}
             <a href="{% url 'sellers' %}?{{ request.GET|removetags:'page,fav' }}"><button class="rec_or_saved_l">Рекомендації</button></a>
             <a href="{% url 'sellers' %}?{{ request.GET|removetags:'page,fav' }}&fav=True"><button class="rec_or_saved_selected rec_or_saved_r">Збережене</button></a>
+            {% endif %}
             {% endif %}
         </div>
     </div>
@@ -168,7 +170,7 @@
                     {% endif %}
                 {% endif %}
             </a>
-            <img style="max-height: 300px; min-height: 150px;" class="sellpreview" src="{{ seller.picture.url }}">
+            <img style="max-height: 300px; min-height: 220px;" class="sellpreview" src="{{ seller.picture.url }}">
             {% if seller.full_name|length > 16 %}
                 <h3>{{ seller.full_name|slice:":16" }}...</h3>
             {% else %}

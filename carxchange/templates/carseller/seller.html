@@ -4,9 +4,9 @@
 <div class="">
     <div class="main">
         <div class="detailholder">
-            <img class="sellerimg" src="{{ seller.picture.url }}">
+            <img style="margin-top:20px" id="avatar" class="sellerimg" src="{{ seller.picture.url }}">
             <br><h1>{{ seller.full_name }}</h1>
-            <div style="height: 200px;" class="maininfo">
+            <div class="maininfo">
             <p>Локація: {{ seller.get_region_display }}</p>
             <p>Всього оголошень створено: {{ seller.cars_added }}</p>
             <p>Контакти: {{ seller.contacts }}</p>
@@ -14,7 +14,7 @@
         </div>
         </div>
         <div class="desc">
-            <h2 style="text-align: center;">Активні оголошення:</h2>
+            <h2 style="text-align: center;margin-top:0px">Активні оголошення:</h2>
             <div class="minicarholder">
                 {% for car in cars %}
                 <div class="minicarad">
