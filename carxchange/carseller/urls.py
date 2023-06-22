@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 
 from . import views
 
@@ -16,5 +16,7 @@ urlpatterns = [
     path('toggle_favorite', views.toggle_favorite, name='toggle_favorite'),
     path('toggle_favorite_sellers', views.toggle_favorite_sellers, name='toggle_favorite_sellers'),
     path('profile/changeuser', views.change_user, name="change_user"),
-    path('profile/updt_ave', views.changeave, name='change_avatar')
+    path('profile/updt_ave', views.changeave, name='change_avatar'),
+    # API
+    path('api/', include('carseller.api.urls'))
 ]
