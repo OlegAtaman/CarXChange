@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block 'nav' %}
+<li class="logoflex"><a href="{% url 'main' %}"><img class='logo' src="{% static 'images/logo.png' %}"></a></li>
+<li><a class='topmenu selectedpage' href="{% url 'api_preview' %}">Для розробників</a></li>
+<li><a class='topmenu' href="{% url 'cars' %}">Автомобілі</a></li>
+<li><a class='topmenu' href="{% url 'sellers' %}">Продавці</a></li>
+{% if not  request.user.is_authenticated %}
+<li class="user_link"><a style='line-height: 0px;' class="topmenu" href="{% url 'login' %}"><img id="dark" style="display: none;" class='user_img' src="{% static 'images/user_dark.png' %}"><img id='light' class='user_img' src="{% static 'images/user.png' %}"></a></li>
+{% else %}
+<li class="user_link"><a style='line-height: 0px;' class="topmenu" href="{% url 'profile' %}"><img id="dark" style="display: none;" class='user_img' src="{% static 'images/user_dark.png' %}"><img id='light' class='user_img' src="{% static 'images/user.png' %}"></a></li>
+{% endif %}
+{% endblock %}
+{% block 'content' %}
+<div class="bgcont"><div class="infoblock" style="height: auto;">
+    <h1>Перелік посилань та доступних методів в API:</h1>
+    <p>1. <a href="{% url 'carlist_api' %}">{{ request.get_full_path }}cars/</a><br>
+    GET - Перелік всіх оголошень. Додайте параметр fav з будь-яким значенням щоб отримати улюблені оголошення вашого акаунту.<br>
+    POST - Створити оголошення. Приймає formdata з необхідними полями.</p>
+    <p>2. <a href="{% url 'cardetail_api' 1 %}">{{ request.get_full_path }}car/{id}/</a><br>
+    GET - Детальна інформація про конкретне оголошення.<br>
+    DELETE - Видалити оголошення (тільки для власників оголошення).</p>
+    <p>3. <a href="{% url 'userlist_api' %}">{{ request.get_full_path }}users/</a><br>
+    GET - Перелік продавців.</p>
+    <p>4. <a href="{% url 'userdetail_api' 1 %}">{{ request.get_full_path }}user/{id}/</a><br>
+    GET - Інформація про конкретного продавця.<br>
+    PUT - Редагувати продавця(лише для свого акаунту)</p>
+    <h1>Авторизація</h1>
+    <p>Сайт підтримує 3 типи авторизації:<br>
+    1. BasicAuthentication<br>
+    2. SessionAuthentication(Відкрийте будь-яку сторінку API в браузері та натисніть Log In)<br>
+    3. TokenAuthentication(За посиланням {{ request.get_full_path }}token-auth/)</p>
+    <h1>Вибори</h1>
+    <p>У формах на сайті є багато полів типу select, де потрібно обирати один з варіантів. У базі даних зберігається спрощений варіант, тож ось "словник" полів:<br>
+    1. Привід: FRO - передній, BAC - задній, FUL - повний.<br>
+    2. Паливо: PET - бензин, DIE - дизель, ELE - електрика, GAS - газ, HYB - гібрид.<br>
+    3. Участь у ДТП: POS - був, NEG - не був.<br>
+    4. Бренд машини: OTH - інший, BMW - BMW, VOL - VolksWagen, TOY - Toyota, MIT - Mitsubishi, SUB - Subaru, FOR - Ford, SKO - Skoda, HUY - Huyndai, CIT - Citroen.<br>
+    5. Коробка передач: MEC - механічна, AUT - автоматична.<br>
+    6. Регіон: OTH - інший, KYI - м. Київ, KYR - Київська обл., KHA - Харківська обл., DNI - Дніпропетровська обл., ODS - Одеська обл., LVI - Львівська обл., VOL - Волинська обл., CHS - Черкаська обл., VIN - Вінницька обл.</p>
+</div></div>
+{% endblock %}

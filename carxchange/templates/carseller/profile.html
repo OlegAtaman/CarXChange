@@ -5,7 +5,8 @@
     <div class="main">
         <script>
             var csrftoken = getCookie('csrftoken');
-            async function respfunc(data, csrftoken) {
+            console.log(csrftoken)
+            async function respfunc(data) {
                     const result = await fetch('{{ request.path }}/changeuser', {method: 'POST',headers:{"Content-Type":"application/json", "X-CSRFToken":csrftoken}, body:JSON.stringify(data)}); 
                     return result.json();
             };

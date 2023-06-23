@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view, parser_classes
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import status
+from django.shortcuts import render
 
 from carseller.models import Car
 from .serializers import CarSerializer, UserSerializer
@@ -10,10 +11,14 @@ from .serializers import CarSerializer, UserSerializer
 
 user_model = get_user_model()
 
+def preview(request):
+    return render(request, 'api/preview.html')
+
 
 @api_view(['GET', 'POST'])
 @parser_classes([MultiPartParser, FormParser])
 def car_list(request):
+
     if request.method == 'GET':
         if request.GET.get('fav') and request.user.is_authenticated:
             cars = request.user.fav_cars.all()
@@ -21,7 +26,10 @@ def car_list(request):
             cars = Car.objects.all()
         serialized = CarSerializer(cars, many=True, context={'request': request})
         return Response({'data': serialized.data})
+    
     elif request.method == 'POST':
+        if not request.user.is_authenticated:
+            return Response({'Error':'You must be authenticated!'}, status=status.HTTP_403_FORBIDDEN)
         data = request.data
         data.update({'owner':request.user.id})
         serializer = CarSerializer(data=data)
@@ -58,7 +66,7 @@ def car_detail(request, car_id):
             car.delete()
             return Response(status=status.HTTP_200_OK)
         else:
-            return Response(status=status.HTTP_403_FORBIDDEN)
+            return Response({'Error':'Thats not your car!'}, status=status.HTTP_403_FORBIDDEN)
 
 
 @api_view(['GET', 'PUT'])
@@ -75,7 +83,9 @@ def user_detail(request, user_id):
         return Response({'data': serialized.data})
     
     if request.method == 'PUT':
-        print(user)
+        if request.user.is_authenticated:
+            if request.user != user:
+                return Response({'Error':'Thats not your account!'}, status=status.HTTP_403_FORBIDDEN)
         serialized = UserSerializer(user, data=request.data, partial=True)
         
         if serialized.is_valid():

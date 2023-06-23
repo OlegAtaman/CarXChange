@@ -51,7 +51,7 @@
             </select> -->
         </p>
         <p>Опис:<br>{{ form.description }}</p>
-        <p>Фото машини: <input type="file" name="picture" accept="image/jpeg, image/jpg" required="" id="id_picture">
+        <p>Фото машини: <input type="file" name="picture" accept="image/*" required="" id="id_picture">
         <label class="profilephotolabel" for="id_picture">-Завантажити-</label></p>
         {{ form.errors }}
         <button type="submit">Створити</button>
