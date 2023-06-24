@@ -1,0 +1,1 @@
+web gunicorn carxchange.wsgi:application --log-file -
