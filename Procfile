@@ -1,1 +1,1 @@
-web gunicorn carxchange.wsgi:application --log-file -
+web gunicorn carxchange.carxchange.wsgi:application --log-file -
