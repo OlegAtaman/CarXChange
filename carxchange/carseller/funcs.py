@@ -24,3 +24,11 @@ def get_three_cars(car):
                 out_car_list.append(car)
     # print(out_car_list)
     return out_car_list
+
+
+def generate_string():
+    string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    out = ""
+    for i in range(15):
+        out += string[randrange(len(string))]
+    return out

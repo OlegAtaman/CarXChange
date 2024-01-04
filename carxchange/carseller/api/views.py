@@ -30,8 +30,11 @@ def car_list(request):
     elif request.method == 'POST':
         if not request.user.is_authenticated:
             return Response({'Error':'You must be authenticated!'}, status=status.HTTP_403_FORBIDDEN)
-        data = request.data
+        data = dict(request.data)
         data.update({'owner':request.user.id})
+        for k, v in data.items():
+            if type(v) == list:
+                data.update({k:v[0]})
         serializer = CarSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
